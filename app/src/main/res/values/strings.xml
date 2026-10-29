@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PostReader</string>
+
+    <!-- Navigation tabs -->
+    <string name="nav_posts">Posts</string>
+    <string name="nav_todos">Todos</string>
+
+    <!-- Post meta & counts -->
+    <string name="post_number">Post #%1$d</string>
+    <string name="author_handle">@%1$s</string>
+    <string name="author_company">at %1$s</string>
+    <string name="section_author">Author</string>
+    <string name="section_discussion">Discussion (%1$d)</string>
+
+    <!-- Actions -->
+    <string name="action_create_post">New Post</string>
+    <string name="action_edit_post">Edit Post</string>
+    <string name="action_delete_post">Delete Post</string>
+    <string name="action_publish">Publish</string>
+    <string name="action_save">Save Changes</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_add_task">Add Task</string>
+    <string name="action_delete">Delete</string>
+    <string name="retry">Retry</string>
+
+    <!-- Filter chips -->
+    <string name="filter_all">All</string>
+    <string name="filter_pending">Pending</string>
+    <string name="filter_completed">Completed</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search posts or tasks</string>
+    <string name="clear_search">Clear search query</string>
+
+    <!-- Compose Post -->
+    <string name="title_create_post">Compose New Post</string>
+    <string name="title_edit_post">Edit Post</string>
+    <string name="hint_post_title">Title</string>
+    <string name="hint_post_body">Write your story or thoughts...</string>
+    <string name="error_empty_title">Please enter a title</string>
+    <string name="error_empty_body">Please enter post content</string>
+
+    <!-- Add Todo Dialog -->
+    <string name="dialog_add_todo_title">New Task</string>
+    <string name="hint_todo_title">What needs to be done?</string>
+    <string name="error_empty_todo">Please enter a task description</string>
+
+    <!-- Delete Dialog -->
+    <string name="dialog_delete_title">Delete this post?</string>
+    <string name="dialog_delete_message">This post will be removed from your list.</string>
+    <string name="post_deleted_success">Post #%1$d deleted</string>
+    <string name="post_created_success">Post published successfully</string>
+    <string name="post_updated_success">Post updated successfully</string>
+    <string name="todo_added_success">Task added</string>
+
+    <!-- Loading & States -->
+    <string name="loading_posts">Loading posts...</string>
+    <string name="loading_post">Loading post details...</string>
+    <string name="loading_todos">Loading tasks...</string>
+    <string name="empty_posts">No posts found</string>
+    <string name="empty_posts_description">No posts match your current search or filter. Try a different query or pull down to refresh.</string>
+    <string name="empty_todos">No tasks found</string>
+    <string name="empty_todos_description">You have no tasks in this category. Tap the plus button to add a task.</string>
+
+    <!-- Errors -->
+    <string name="error_network">Could not connect to JSONPlaceholder. Check your connection and try again.</string>
+    <string name="error_offline">You are offline. Connect to the internet and try again.</string>
+    <string name="error_http">The server returned code %1$d. Try again.</string>
+    <string name="error_missing_post">This post could not be loaded.</string>
+</resources>

@@ -1,0 +1,20 @@
+<resources>
+    <style name="Base.Theme.PostReader" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/indigo</item>
+        <item name="colorOnPrimary">@color/on_indigo</item>
+        <item name="colorPrimaryContainer">@color/indigo_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_indigo_container</item>
+        <item name="colorSecondary">@color/indigo</item>
+        <item name="colorOnSecondary">@color/on_indigo</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="colorOnSurfaceVariant">@color/ink_muted</item>
+        <item name="colorOutline">@color/hairline</item>
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.PostReader" parent="Base.Theme.PostReader" />
+</resources>
