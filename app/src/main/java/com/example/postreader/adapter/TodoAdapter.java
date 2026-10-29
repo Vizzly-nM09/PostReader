@@ -127,6 +127,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             }
         });
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onToggle(todo);
+            }
+        });
+
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDelete(todo);

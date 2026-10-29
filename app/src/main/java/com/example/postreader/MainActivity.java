@@ -153,12 +153,15 @@ public class MainActivity extends AppCompatActivity {
                 todoRepository.toggleTodo(todo, new RepositoryCallback<Todo>() {
                     @Override
                     public void onSuccess(Todo result) {
-                        todoAdapter.setTodos(todoRepository.getCachedTodos());
+                        runOnUiThread(() -> todoAdapter.setTodos(todoRepository.getCachedTodos()));
                     }
 
                     @Override
                     public void onError(String message) {
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> {
+                            todoAdapter.setTodos(todoRepository.getCachedTodos());
+                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                        });
                     }
                 });
             }
@@ -168,12 +171,15 @@ public class MainActivity extends AppCompatActivity {
                 todoRepository.deleteTodo(todo.getId(), new RepositoryCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
-                        todoAdapter.setTodos(todoRepository.getCachedTodos());
+                        runOnUiThread(() -> todoAdapter.setTodos(todoRepository.getCachedTodos()));
                     }
 
                     @Override
                     public void onError(String message) {
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
+                        runOnUiThread(() -> {
+                            todoAdapter.setTodos(todoRepository.getCachedTodos());
+                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                        });
                     }
                 });
             }

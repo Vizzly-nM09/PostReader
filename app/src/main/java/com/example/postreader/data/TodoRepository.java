@@ -53,33 +53,48 @@ public class TodoRepository {
         });
     }
 
+    private synchronized void updateCachedTodo(Todo todo) {
+        for (int i = 0; i < cachedTodos.size(); i++) {
+            if (cachedTodos.get(i).getId() == todo.getId()) {
+                cachedTodos.set(i, todo);
+                break;
+            }
+        }
+    }
+
     public synchronized void toggleTodo(Todo todo, RepositoryCallback<Todo> callback) {
         boolean originalStatus = todo.isCompleted();
-        todo.setCompleted(!originalStatus);
+        boolean newStatus = !originalStatus;
+        todo.setCompleted(newStatus);
+        updateCachedTodo(todo);
 
-        RetrofitClient.getApiService().updateTodo(todo.getId(), todo).enqueue(new Callback<Todo>() {
+        // JSONPlaceholder adalah mock REST API dengan 200 data statis.
+        // Item baru (id > 200) tidak disimpan di disk server, sehingga PUT/PATCH
+        // dapat memicu HTTP 500 pada backend json-server. Kita sinkronkan di cache lokal.
+        if (todo.getId() > 200) {
+            callback.onSuccess(todo);
+            return;
+        }
+
+        // Untuk item statis server, gunakan PATCH (metode resmi untuk partial update field completed)
+        RetrofitClient.getApiService().patchTodo(todo.getId(), todo).enqueue(new Callback<Todo>() {
             @Override
             public void onResponse(Call<Todo> call, Response<Todo> response) {
-                if (response.isSuccessful()) {
-                    synchronized (TodoRepository.this) {
-                        for (int i = 0; i < cachedTodos.size(); i++) {
-                            if (cachedTodos.get(i).getId() == todo.getId()) {
-                                cachedTodos.set(i, todo);
-                                break;
-                            }
-                        }
-                    }
+                if (response.isSuccessful() || response.code() == 500) {
+                    // Jika server mock merespons sukses atau status 500 karena mock limitation, pertahankan perubahan lokal
                     callback.onSuccess(todo);
                 } else {
                     todo.setCompleted(originalStatus);
-                    callback.onError("Failed to toggle task. Status: " + response.code());
+                    updateCachedTodo(todo);
+                    callback.onError("Gagal mengubah status tugas. Status: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Todo> call, Throwable t) {
                 todo.setCompleted(originalStatus);
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Network error");
+                updateCachedTodo(todo);
+                callback.onError(t.getMessage() != null ? t.getMessage() : "Kesalahan jaringan");
             }
         });
     }
@@ -97,39 +112,45 @@ public class TodoRepository {
                     }
                     callback.onSuccess(created);
                 } else {
-                    callback.onError("Failed to add task. Status: " + response.code());
+                    callback.onError("Gagal menambahkan tugas. Status: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Todo> call, Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Network error");
+                callback.onError(t.getMessage() != null ? t.getMessage() : "Kesalahan jaringan");
             }
         });
     }
 
     public synchronized void deleteTodo(int id, RepositoryCallback<Void> callback) {
+        synchronized (TodoRepository.this) {
+            for (int i = 0; i < cachedTodos.size(); i++) {
+                if (cachedTodos.get(i).getId() == id) {
+                    cachedTodos.remove(i);
+                    break;
+                }
+            }
+        }
+
+        if (id > 200) {
+            callback.onSuccess(null);
+            return;
+        }
+
         RetrofitClient.getApiService().deleteTodo(id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    synchronized (TodoRepository.this) {
-                        for (int i = 0; i < cachedTodos.size(); i++) {
-                            if (cachedTodos.get(i).getId() == id) {
-                                cachedTodos.remove(i);
-                                break;
-                            }
-                        }
-                    }
+                if (response.isSuccessful() || response.code() == 500) {
                     callback.onSuccess(null);
                 } else {
-                    callback.onError("Failed to delete task. Status: " + response.code());
+                    callback.onError("Gagal menghapus tugas. Status: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Network error");
+                callback.onError(t.getMessage() != null ? t.getMessage() : "Kesalahan jaringan");
             }
         });
     }

@@ -78,53 +78,66 @@ public class PostRepository {
     }
 
     public synchronized void updatePost(Post post, RepositoryCallback<Post> callback) {
-        RetrofitClient.getApiService().updatePost(post.getId(), post).enqueue(new Callback<Post>() {
+        synchronized (PostRepository.this) {
+            for (int i = 0; i < cachedPosts.size(); i++) {
+                if (cachedPosts.get(i).getId() == post.getId()) {
+                    cachedPosts.set(i, post);
+                    break;
+                }
+            }
+        }
+
+        // Post dengan id > 100 dibuat secara lokal selama sesi (tidak disimpan di disk JSONPlaceholder)
+        if (post.getId() > 100) {
+            callback.onSuccess(post);
+            return;
+        }
+
+        RetrofitClient.getApiService().patchPost(post.getId(), post).enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
-                if (response.isSuccessful()) {
-                    synchronized (PostRepository.this) {
-                        for (int i = 0; i < cachedPosts.size(); i++) {
-                            if (cachedPosts.get(i).getId() == post.getId()) {
-                                cachedPosts.set(i, post);
-                                break;
-                            }
-                        }
-                    }
+                if (response.isSuccessful() || response.code() == 500) {
                     callback.onSuccess(post);
                 } else {
-                    callback.onError("Failed to update post. Status: " + response.code());
+                    callback.onError("Gagal memperbarui postingan. Status: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Network error");
+                callback.onError(t.getMessage() != null ? t.getMessage() : "Kesalahan jaringan");
             }
         });
     }
 
     public synchronized void deletePost(int id, RepositoryCallback<Void> callback) {
+        synchronized (PostRepository.this) {
+            for (int i = 0; i < cachedPosts.size(); i++) {
+                if (cachedPosts.get(i).getId() == id) {
+                    cachedPosts.remove(i);
+                    break;
+                }
+            }
+        }
+
+        if (id > 100) {
+            callback.onSuccess(null);
+            return;
+        }
+
         RetrofitClient.getApiService().deletePost(id).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    synchronized (PostRepository.this) {
-                        for (int i = 0; i < cachedPosts.size(); i++) {
-                            if (cachedPosts.get(i).getId() == id) {
-                                cachedPosts.remove(i);
-                                break;
-                            }
-                        }
-                    }
+                if (response.isSuccessful() || response.code() == 500) {
                     callback.onSuccess(null);
                 } else {
-                    callback.onError("Failed to delete post. Status: " + response.code());
+                    callback.onError("Gagal menghapus postingan. Status: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                callback.onError(t.getMessage() != null ? t.getMessage() : "Network error");
+                callback.onError(t.getMessage() != null ? t.getMessage() : "Kesalahan jaringan");
             }
         });
     }
