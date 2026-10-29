@@ -13,5 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
-*.md
 .agents
+Android Chapter 9.md
+DESIGN.md
+Materi chapter 9 Pemrograman Web R1.md
