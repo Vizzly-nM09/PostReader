@@ -100,19 +100,7 @@ com.example.postreader/
 └── MainActivity.java            # Layar utama (daftar post, tab todos, pencarian)
 ```
 
----
-
-## 6. Tangkapan Layar Aplikasi
-
-> Letakkan gambar tangkapan layar pengujian aplikasi Anda di dalam folder `docs/screenshots/` atau lampirkan di bawah ini:
-
-| 1. Daftar Postingan | 2. Detail Post & Komentar | 3. Form Buat / Edit Post | 4. Tab Todos & Filter |
-| :-----------------: | :-----------------------: | :----------------------: | :-------------------: |
-| _(Tangkapan Layar)_ |    _(Tangkapan Layar)_    |   _(Tangkapan Layar)_    |  _(Tangkapan Layar)_  |
-
----
-
-## 7. Prasyarat & Cara Menjalankan
+## 6. Prasyarat & Cara Menjalankan
 
 ### Prasyarat Sistem
 
